@@ -3,7 +3,7 @@ class RestaurantsController < ApplicationController
   def index
     @restaurants = Restaurant.near(params[:city] || 'São Paulo')
     filter_by_category if params[:category]
-    render json: @restaurants
+    render json: @restaurants, each_serializer: RestaurantSerializer, root: 'restaurants'
   end
 
   def show
@@ -19,9 +19,7 @@ class RestaurantsController < ApplicationController
   private
 
   def filter_by_category
-    @restaurants = @restaurants.select do |r|
-      r.category.title == params[:category]
-    end
+    @restaurants = @restaurants.select { |r| r.category.title == params[:category] }
   end
 
   def set_restaurant
