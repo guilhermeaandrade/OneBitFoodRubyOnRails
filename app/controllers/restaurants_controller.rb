@@ -12,14 +12,14 @@ class RestaurantsController < ApplicationController
 
   def search
     @restaurants = Restaurant.search(name_or_description_cont: params[:q]).result
-    @restaurants = @restaurants.near(params[:city]) if params[:city]
+    @restaurants = @restaurants.includes(:category).near(params[:city]) if params[:city]
     render json: @restaurants
   end
 
   private
 
   def filter_by_category
-    @restaurants = @restaurants.select { |r| r.category.title == params[:category] }
+    @restaurants = @restaurants.includes(:category).select { |r| r.category.title == params[:category] }
   end
 
   def set_restaurant
